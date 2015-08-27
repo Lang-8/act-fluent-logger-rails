@@ -23,6 +23,7 @@ module ActFluentLoggerRails
         host: fluent_config['fluent_host'],
         port: fluent_config['fluent_port'],
         messages_type: fluent_config['messages_type'],
+        with_error_field: fluent_config.has_key?('with_error_field') ? fluent_config['with_error_field'] : false
       }
       level = SEV_LABEL.index(Rails.application.config.log_level.to_s.upcase)
       logger = ActFluentLoggerRails::FluentLogger.new(settings, level, log_tags)
@@ -57,6 +58,7 @@ module ActFluentLoggerRails
       host    = options[:host]
       @messages_type = (options[:messages_type] || :array).to_sym
       @tag = options[:tag]
+      @with_error_field = options[:with_error_field]
       @fluent_logger = ::Fluent::Logger::FluentLogger.new(nil, host: host, port: port)
       @severity = 0
       @messages = []
@@ -112,7 +114,10 @@ module ActFluentLoggerRails
                     @request.send(v)
                   else
                     v
-                  end rescue :error
+                  end rescue :error 
+        unless @with_error_field
+          @map.delete(k)
+        end
       end
       @fluent_logger.post(@tag, @map)
       @severity = 0
