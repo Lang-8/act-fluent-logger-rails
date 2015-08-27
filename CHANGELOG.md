@@ -1,3 +1,7 @@
+## 0.1.8 / August 27 2015
+
+* Added an option to remove fields with error from results 
+
 ## 0.1.7 / July 30 2015
 
 * Be able to log exceptions #15.
