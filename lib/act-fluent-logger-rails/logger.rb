@@ -115,7 +115,7 @@ module ActFluentLoggerRails
                   else
                     v
                   end rescue :error 
-        unless @with_error_field
+        if not @with_error_field and @map[k] == :error
           @map.delete(k)
         end
       end
